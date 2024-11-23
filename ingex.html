@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Assistant</title>
+</head>
+<body>
+    <h1>Jarvis Voice Assistant</h1>
+    <button onclick="startListening()">Talk to Jarvis</button>
+    <p id="response"></p>
+
+    <script>
+        // Initialize SpeechRecognition (Web Speech API)
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = true;
+
+        // Initialize SpeechSynthesis (Text-to-Speech)
+        const synth = window.speechSynthesis;
+
+        // Function to start listening for voice input
+        function startListening() {
+            recognition.start();
+        }
+
+        // Process the voice input and generate a response
+        recognition.onresult = (event) => {
+            const userSpeech = event.results[0][0].transcript;
+            document.getElementById('response').textContent = `You said: ${userSpeech}`;
+            processCommand(userSpeech);
+        };
+
+        // Process the command and respond with voice
+        function processCommand(command) {
+            let responseText = '';
+            if (command.toLowerCase().includes('hello') || command.toLowerCase().includes('hi')) {
+                responseText = 'Hello, how can I help you today?';
+            } else if (command.toLowerCase().includes('what is your name')) {
+                responseText = 'I am Jarvis, your assistant.';
+            } else if (command.toLowerCase().includes('how are you')) {
+                responseText = 'I am doing great, thank you for asking!';
+            } else if (command.toLowerCase().includes('goodbye')) {
+                responseText = 'Goodbye! Have a great day!';
+            } else {
+                responseText = 'I am sorry, I didn\'t understand that.';
+            }
+
+            // Speak the response using SpeechSynthesis
+            const utterance = new SpeechSynthesisUtterance(responseText);
+            synth.speak(utterance);
+        }
+
+        // Handle e
